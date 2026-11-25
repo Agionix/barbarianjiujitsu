@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import logoUrl from './assets/barbarian-logo.jpg';
 import { BeltSvg } from './components/BeltSvg';
+import { LoginScreen } from './components/LoginScreen';
 import { TechniqueSheet } from './components/TechniqueSheet';
 import { BELTS, D, getBeltColor, GR, NEXT } from './data/graduation';
+import { AuthStudent, isStudentBlocked, STUDENTS } from './data/students';
 
 interface SelectionState {
   f: string;
@@ -28,7 +30,23 @@ function writeStorage(key: string, value: unknown): void {
   }
 }
 
+function readStoredAuth(): AuthStudent | null {
+  const saved = readStorage<AuthStudent | null>('bbn-auth', null);
+  if (!saved || typeof saved.codigo !== 'number') return null;
+  if (isStudentBlocked(saved.codigo)) {
+    try {
+      localStorage.removeItem('bbn-auth');
+    } catch {
+      // Ignore storage errors
+    }
+    return null;
+  }
+  const exists = STUDENTS.some(([codigo]) => codigo === saved.codigo);
+  return exists ? saved : null;
+}
+
 export default function App() {
+  const [student, setStudent] = useState<AuthStudent | null>(() => readStoredAuth());
   const [sel, setSel] = useState<SelectionState>(() =>
     readStorage<SelectionState>('bbn-sel', { f: 'Branca', g: '1º grau' }),
   );
@@ -115,6 +133,25 @@ export default function App() {
 
   const openRow = openIndex !== null ? (rows[openIndex] ?? null) : null;
 
+  const handleLoginSuccess = (authStudent: AuthStudent) => {
+    writeStorage('bbn-auth', authStudent);
+    setStudent(authStudent);
+  };
+
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem('bbn-auth');
+    } catch {
+      // Ignore storage errors
+    }
+    setOpenIndex(null);
+    setStudent(null);
+  };
+
+  if (!student) {
+    return <LoginScreen onSuccess={handleLoginSuccess} />;
+  }
+
   return (
     <>
       <header className="band">
@@ -131,6 +168,14 @@ export default function App() {
             Guia de graduação
             <span>Selecione sua faixa atual e o exame que vai fazer</span>
           </h1>
+        </div>
+        <div className="wrap userbar">
+          <span>
+            Aluno: <strong>{student.nome}</strong> · Código <strong>{student.codigo}</strong>
+          </span>
+          <button type="button" className="logout-btn" onClick={handleLogout}>
+            Sair
+          </button>
         </div>
         <div className="stage">
           <div className="wrap">
