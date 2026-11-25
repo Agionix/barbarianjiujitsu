@@ -125,6 +125,7 @@ export default function App() {
             className="logo"
             width={420}
             height={420}
+            draggable={false}
           />
           <h1>
             Guia de graduação
