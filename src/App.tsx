@@ -33,6 +33,9 @@ function writeStorage(key: string, value: unknown): void {
 function readStoredAuth(): AuthStudent | null {
   const saved = readStorage<AuthStudent | null>('bbn-auth', null);
   if (!saved || typeof saved.codigo !== 'number') return null;
+  if (saved.codigo === 1 && saved.role === 'admin') {
+    return { codigo: 1, nome: 'Administrador', role: 'admin' };
+  }
   if (isStudentBlocked(saved.codigo)) {
     try {
       localStorage.removeItem('bbn-auth');
@@ -170,9 +173,15 @@ export default function App() {
           </h1>
         </div>
         <div className="wrap userbar">
-          <span>
-            Aluno: <strong>{student.nome}</strong> · Código <strong>{student.codigo}</strong>
-          </span>
+          {student.role === 'admin' ? (
+            <span>
+              <strong>Administrador</strong> · Código <strong>{student.codigo}</strong>
+            </span>
+          ) : (
+            <span>
+              Aluno: <strong>{student.nome}</strong> · Código <strong>{student.codigo}</strong>
+            </span>
+          )}
           <button type="button" className="logout-btn" onClick={handleLogout}>
             Sair
           </button>

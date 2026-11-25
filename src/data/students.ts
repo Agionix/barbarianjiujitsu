@@ -430,6 +430,7 @@ export function isStudentBlocked(codigo: number): boolean {
 export interface AuthStudent {
   codigo: number;
   nome: string;
+  role?: 'student' | 'admin';
 }
 
 export type AuthResult =
@@ -459,6 +460,24 @@ export function authenticateStudent(codeInput: string, nameInput: string): AuthR
       ok: false,
       reason: 'invalid',
       error: 'Informe o código numérico do seu perfil na Tecnofit.',
+    };
+  }
+
+  if (codeNum === 1) {
+    if (nameInput.trim().toLowerCase() === 'admin_123') {
+      return {
+        ok: true,
+        student: {
+          codigo: 1,
+          nome: 'Administrador',
+          role: 'admin',
+        },
+      };
+    }
+    return {
+      ok: false,
+      reason: 'invalid',
+      error: 'Nome não confere com o código informado. Tente usar seu nome como está na Tecnofit.',
     };
   }
 
@@ -510,6 +529,7 @@ export function authenticateStudent(codeInput: string, nameInput: string): AuthR
     student: {
       codigo: record[0],
       nome: displayName,
+      role: 'student',
     },
   };
 }
