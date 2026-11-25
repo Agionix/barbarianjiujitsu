@@ -1,9 +1,38 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 import logoUrl from '../assets/barbarian-login-logo.png';
 import { authenticateStudent, AuthStudent } from '../data/students';
 
 interface LoginScreenProps {
   onSuccess: (student: AuthStudent) => void;
+}
+
+const TECNOFIT_WEB_URL = 'https://www.tecnofit.com.br';
+const TECNOFIT_IOS_APP_URL = 'https://apps.apple.com/br/app/tecnofit/id1109478634';
+const TECNOFIT_ANDROID_INTENT_URL =
+  'intent://open#Intent;package=br.com.tecnofit.mobileapp;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dbr.com.tecnofit.mobileapp;end';
+
+function getTecnofitLinkProps(): {
+  href: string;
+  target?: '_blank';
+  rel?: 'noopener noreferrer';
+} {
+  if (typeof navigator === 'undefined') {
+    return { href: TECNOFIT_WEB_URL, target: '_blank', rel: 'noopener noreferrer' };
+  }
+
+  const ua = navigator.userAgent || '';
+  const isAndroid = /Android/i.test(ua);
+  const isIOS =
+    /iPhone|iPad|iPod/i.test(ua) ||
+    (/Macintosh/i.test(ua) && typeof navigator.maxTouchPoints === 'number' && navigator.maxTouchPoints > 1);
+
+  if (isAndroid) {
+    return { href: TECNOFIT_ANDROID_INTENT_URL };
+  }
+  if (isIOS) {
+    return { href: TECNOFIT_IOS_APP_URL, target: '_blank', rel: 'noopener noreferrer' };
+  }
+  return { href: TECNOFIT_WEB_URL, target: '_blank', rel: 'noopener noreferrer' };
 }
 
 export function LoginScreen({ onSuccess }: LoginScreenProps) {
@@ -13,6 +42,7 @@ export function LoginScreen({ onSuccess }: LoginScreenProps) {
   const [error, setError] = useState('');
   const [errorReason, setErrorReason] = useState<'invalid' | 'blocked' | null>(null);
   const [noticeKey, setNoticeKey] = useState(0);
+  const tecnofitLink = useMemo(() => getTecnofitLinkProps(), []);
 
   const clearError = () => {
     if (error) {
@@ -103,9 +133,9 @@ export function LoginScreen({ onSuccess }: LoginScreenProps) {
                   </p>
                   <a
                     className="help-link"
-                    href="https://www.tecnofit.com.br"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={tecnofitLink.href}
+                    target={tecnofitLink.target}
+                    rel={tecnofitLink.rel}
                     tabIndex={showHelp ? 0 : -1}
                   >
                     Acessar Tecnofit ↗
