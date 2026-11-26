@@ -4,7 +4,7 @@ import { BeltSvg } from './components/BeltSvg';
 import { LoginScreen } from './components/LoginScreen';
 import { TechniqueSheet } from './components/TechniqueSheet';
 import { BELTS, D, getBeltColor, GR, NEXT } from './data/graduation';
-import { AuthStudent, isStudentBlocked, STUDENTS } from './data/students';
+import { AuthStudent, STUDENTS } from './data/students';
 
 interface SelectionState {
   f: string;
@@ -35,14 +35,6 @@ function readStoredAuth(): AuthStudent | null {
   if (!saved || typeof saved.codigo !== 'number') return null;
   if (saved.codigo === 1 && saved.role === 'admin') {
     return { codigo: 1, nome: 'Administrador', role: 'admin' };
-  }
-  if (isStudentBlocked(saved.codigo)) {
-    try {
-      localStorage.removeItem('bbn-auth');
-    } catch {
-      // Ignore storage errors
-    }
-    return null;
   }
   const exists = STUDENTS.some(([codigo]) => codigo === saved.codigo);
   return exists ? saved : null;

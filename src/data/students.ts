@@ -414,19 +414,6 @@ export const STUDENTS: readonly StudentRecord[] = [
   [570, 'WILSON RODRIGO FLORENCIO DE ALMEIDA'],
 ];
 
-export const BLOCKED_STUDENT_CODES: ReadonlySet<number> = new Set<number>([
-  14, 15, 16, 37, 46, 95, 135, 145, 172, 191, 241, 247, 296, 309, 342, 355, 371,
-  419, 429, 436, 447, 513, 562, 657, 675, 686, 694, 721, 738, 753, 762, 766,
-  819, 824, 825, 826, 853, 862, 867, 868, 902, 932, 941, 948, 961, 983, 986, 989,
-  1015, 1016, 1020, 1022, 1033, 1034, 1058, 1067, 1068, 1070, 1085, 1086,
-  1096, 1102, 1103, 1106, 1112, 1117, 1122, 1128, 1129, 1130, 1135, 1137, 1146,
-  1147, 1148, 1150, 1151, 1154, 1159, 1176, 1177, 1178, 1183, 1207,
-]);
-
-export function isStudentBlocked(codigo: number): boolean {
-  return BLOCKED_STUDENT_CODES.has(codigo);
-}
-
 export interface AuthStudent {
   codigo: number;
   nome: string;
@@ -435,7 +422,7 @@ export interface AuthStudent {
 
 export type AuthResult =
   | { ok: true; student: AuthStudent }
-  | { ok: false; reason: 'invalid' | 'blocked'; error: string };
+  | { ok: false; error: string };
 
 function normalizeText(value: string): string {
   return value
@@ -458,7 +445,6 @@ export function authenticateStudent(codeInput: string, nameInput: string): AuthR
   if (!digits || !Number.isInteger(codeNum) || codeNum <= 0) {
     return {
       ok: false,
-      reason: 'invalid',
       error: 'Informe o código numérico do seu perfil na Tecnofit.',
     };
   }
@@ -476,7 +462,6 @@ export function authenticateStudent(codeInput: string, nameInput: string): AuthR
     }
     return {
       ok: false,
-      reason: 'invalid',
       error: 'Nome não confere com o código informado. Tente usar seu nome como está na Tecnofit.',
     };
   }
@@ -485,7 +470,6 @@ export function authenticateStudent(codeInput: string, nameInput: string): AuthR
   if (!record) {
     return {
       ok: false,
-      reason: 'invalid',
       error: 'Código não encontrado. Confira o número no seu perfil da Tecnofit.',
     };
   }
@@ -494,7 +478,6 @@ export function authenticateStudent(codeInput: string, nameInput: string): AuthR
   if (typedNormalized.length < 2) {
     return {
       ok: false,
-      reason: 'invalid',
       error: 'Digite seu nome para confirmar o acesso.',
     };
   }
@@ -510,17 +493,7 @@ export function authenticateStudent(codeInput: string, nameInput: string): AuthR
   if (!allTokensMatch) {
     return {
       ok: false,
-      reason: 'invalid',
       error: 'Nome não confere com o código informado. Tente usar seu nome como está na Tecnofit.',
-    };
-  }
-
-  if (isStudentBlocked(record[0])) {
-    return {
-      ok: false,
-      reason: 'blocked',
-      error:
-        'Seu cadastro consta como bloqueado na Tecnofit. Entre em contato com a academia para regularizar e liberar seu acesso.',
     };
   }
 

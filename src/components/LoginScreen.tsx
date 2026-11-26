@@ -40,14 +40,12 @@ export function LoginScreen({ onSuccess }: LoginScreenProps) {
   const [nome, setNome] = useState('');
   const [showHelp, setShowHelp] = useState(false);
   const [error, setError] = useState('');
-  const [errorReason, setErrorReason] = useState<'invalid' | 'blocked' | null>(null);
   const [noticeKey, setNoticeKey] = useState(0);
   const tecnofitLink = useMemo(() => getTecnofitLinkProps(), []);
 
   const clearError = () => {
     if (error) {
       setError('');
-      setErrorReason(null);
     }
   };
 
@@ -56,12 +54,10 @@ export function LoginScreen({ onSuccess }: LoginScreenProps) {
     const res = authenticateStudent(codigo, nome);
     if (!res.ok) {
       setError(res.error);
-      setErrorReason(res.reason);
       setNoticeKey((k) => k + 1);
       return;
     }
     setError('');
-    setErrorReason(null);
     onSuccess(res.student);
   };
 
@@ -160,33 +156,7 @@ export function LoginScreen({ onSuccess }: LoginScreenProps) {
             />
           </div>
 
-          {error && errorReason === 'blocked' && (
-            <div key={noticeKey} className="login-blocked-alert" role="alert">
-              <span className="login-blocked-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="4" y="11" width="16" height="10" rx="2" />
-                  <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-                </svg>
-              </span>
-              <div className="login-blocked-copy">
-                <strong>Acesso bloqueado</strong>
-                <p>
-                  Seu cadastro consta como bloqueado na Tecnofit. Entre em{' '}
-                  <a
-                    className="login-whatsapp-link"
-                    href="https://wa.me/5519987812012"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    contato
-                  </a>{' '}
-                  com a academia para regularizar e liberar seu acesso.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {error && errorReason !== 'blocked' && (
+          {error && (
             <p key={noticeKey} className="login-err" role="alert">
               {error}
             </p>

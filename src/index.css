@@ -757,7 +757,6 @@ ol.steps li::before {
   .help-glyph,
   .help-collapse,
   .help-link,
-  .login-blocked-alert,
   .login-err {
     transition: none;
     animation: none;
@@ -772,57 +771,6 @@ ol.steps li::before {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
-}
-.login-blocked-alert {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 13px 14px;
-  border-radius: 12px;
-  background: rgba(255, 138, 149, 0.12);
-  border: 1px solid rgba(255, 138, 149, 0.34);
-  color: var(--warn);
-  animation: noticeSlideIn 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-.login-blocked-icon {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
-  background: rgba(255, 138, 149, 0.16);
-  color: var(--warn);
-}
-.login-blocked-copy strong {
-  display: block;
-  font-size: 14px;
-  font-weight: 700;
-  color: #ffb3ba;
-  margin-bottom: 2px;
-}
-.login-blocked-copy p {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.45;
-  color: #f3d7da;
-}
-.login-whatsapp-link {
-  color: #ffffff;
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1.5px;
-  transition: color 0.15s ease, opacity 0.15s ease;
-}
-.login-whatsapp-link:hover {
-  color: #86efac;
-}
-.login-whatsapp-link:focus-visible {
-  outline: 2px solid #ffffff;
-  outline-offset: 2px;
-  border-radius: 3px;
 }
 .login-err {
   margin: 0;
