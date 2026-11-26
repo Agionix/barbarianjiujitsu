@@ -9,7 +9,7 @@ interface LoginScreenProps {
 const TECNOFIT_WEB_URL = 'https://www.tecnofit.com.br';
 const TECNOFIT_IOS_APP_URL = 'https://apps.apple.com/br/app/tecnofit/id1109478634';
 const TECNOFIT_ANDROID_INTENT_URL =
-  'intent://open#Intent;package=br.com.tecnofit.mobileapp;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dbr.com.tecnofit.mobileapp;end';
+  'intent://#Intent;scheme=tecnofit;package=br.com.tecnofit.mobileapp;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dbr.com.tecnofit.mobileapp;end';
 
 function getTecnofitLinkProps(): {
   href: string;
